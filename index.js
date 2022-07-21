@@ -19,18 +19,24 @@ showTask();
 
 addBtn.onclick = () => {
     let userData = inputText.value;
-    let getLocalStorage = localStorage.getItem("New Todo");
 
-    if (getLocalStorage === null) {
-        todoArr = [];
+    if (userData != '') {
+        let getLocalStorage = localStorage.getItem("New Todo");
+
+        if (getLocalStorage === null) {
+            todoArr = [];
+        }
+        else {
+            todoArr = JSON.parse(getLocalStorage);
+        }
+
+        todoArr.push(userData);
+        localStorage.setItem("New Todo", JSON.stringify(todoArr));
+        showTask();
     }
     else {
-        todoArr = JSON.parse(getLocalStorage);
+        alert("Error: Your todo text is empty!")
     }
-
-    todoArr.push(userData);
-    localStorage.setItem("New Todo", JSON.stringify(todoArr));
-    showTask();
 }
 
 function showTask() {
@@ -56,7 +62,7 @@ function showTask() {
 
     let newLiTag = '';
     todoArr.forEach((element, index) => {
-        newLiTag += `<li>${element}<span onclick="delTodo(${index})"><i class="fa-solid fa-trash-can"></i></span></li>`;
+        newLiTag += `<li>${element}<span class="done" onclick="done(${index})"><i class="fa-solid fa-circle-check"></i></span> <span onclick="delTodo(${index})"><i class="fa-solid fa-trash-can"></i></span></li>`;
     });
 
     todoList.innerHTML = newLiTag;
@@ -71,6 +77,16 @@ function delTodo(index) {
     todoArr.splice(index, 1);
     localStorage.setItem("New Todo", JSON.stringify(todoArr));
     showTask();
+}
+
+function done(index) {
+    let getLocalStorage = localStorage.getItem("New Todo");
+    todoArr = JSON.parse(getLocalStorage);
+
+    todoArr[index] = todoArr[index].strike();
+    localStorage.setItem("New Todo", JSON.stringify(todoArr));
+    showTask();
+
 }
 
 clearAllBtn.onclick = () => {
